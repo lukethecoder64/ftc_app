@@ -34,7 +34,18 @@ public class Auto extends LinearOpMode {
         robot.s2.setPosition(1 - 0 / 2); // right one
             
         // Wait for the start button
-        telemetry.addData(">", "Press Start to scan Servo." );
+        telemetry.addData(">", "Press X(blue) for blue alliance and B(red) for red alliance" );
+        telemetry.update();
+        while (!robot.red && !robot.blue) {
+            if(gamepad1.x) {
+                robot.blue = true;
+                telemetry.addData(">", "Blue" );
+            }
+            if(gamepad1.b) {
+                robot.red = true;
+                telemetry.addData(">", "Red" );
+            }
+        }
         telemetry.update();
         
         waitForStart();

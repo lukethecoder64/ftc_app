@@ -23,6 +23,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Core
 {
+    public boolean red = false;
+    public boolean blue = false;
+
     public double wheelDiam = 3;
     public double wheelCurc = 3.14159 * wheelDiam;
     public double ticksPerRev = 1120;
