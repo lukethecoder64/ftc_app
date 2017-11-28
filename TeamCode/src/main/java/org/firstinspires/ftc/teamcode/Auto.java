@@ -25,6 +25,7 @@ public class Auto extends LinearOpMode {
     double grabopen = 1;
     // doublfe finaldirection;
     // double finalspeed;
+    int state = 0;
 
     @Override
     public void runOpMode() {
@@ -61,53 +62,74 @@ public class Auto extends LinearOpMode {
             // robot.s2.setPosition(1 - grabopen / 2); // right one
             
             if(robot.period.seconds() < 4) {
-                robot.lift.setTargetPosition(-1500);
-                robot.s1.setPosition(.4);
-                robot.s2.setPosition(1);
-                targetdirection = 0;
-                inputdirection = 0;
-                inputspeed = 0;
-            }
-            else if(robot.period.seconds() < 6) {
-                targetdirection = 0;
-                inputdirection = 0;
-                inputspeed = 1;
-            }
-            else if(robot.period.seconds() < 8) {
-                targetdirection = 0;
-                inputdirection = 180;
-                inputspeed = .5;
+                state = 1;
             }
             else if(robot.period.seconds() < 10) {
-                targetdirection = 0;
-                inputdirection = 0;
-                inputspeed = 1;
+                state = 2;
             }
             else if(robot.period.seconds() < 12) {
-                targetdirection = -90;
-                inputdirection = 0;
-                inputspeed = 0;
+                state = 3;
             }
             else if(robot.period.seconds() < 14) {
-                targetdirection = -90;
-                inputdirection = 0;
-                inputspeed = 0.33;
-            }
-            else if(robot.period.seconds() < 15) {
-                robot.s1.setPosition(.9);
-                robot.s2.setPosition(.5);
-                targetdirection = -90;
-                inputdirection = 0;
-                inputspeed = 0;
+                state = 4;
             }
             else if(robot.period.seconds() < 16) {
-                targetdirection = -90;
-                inputdirection = 180;
-                inputspeed = 0.5;
+                state = 5;
+            }
+            else if(robot.period.seconds() < 20) {
+                state = 6;
+            }
+            else if(robot.period.seconds() < 21) {
+                state = 7;
+            }
+            else if(robot.period.seconds() < 24) {
+                state = 8;
             }
             else {
-                robot.lift.setTargetPosition(0);
-                inputspeed = 0;
+                state = 0;
+            }
+
+            switch (state) {
+                case 0:
+                    robot.lift.setTargetPosition(0);
+                    inputspeed = 0;
+                case 1:
+                    robot.lift.setTargetPosition(-1500);
+                    robot.s1.setPosition(.4);
+                    robot.s2.setPosition(1);
+                    targetdirection = 0;
+                    inputdirection = 0;
+                    inputspeed = 0;
+                case 2:
+                    targetdirection = 0;
+                    inputdirection = 0;
+                    inputspeed = 1;
+                case 3:
+                    targetdirection = 0;
+                    inputdirection = 180;
+                    inputspeed = .5;
+                case 4:
+                    targetdirection = 0;
+                    inputdirection = 0;
+                    inputspeed = 1;
+                case 5:
+                    targetdirection = -90;
+                    inputdirection = 0;
+                    inputspeed = 0;
+                case 6:
+                    targetdirection = -90;
+                    inputdirection = 0;
+                    inputspeed = 0.33;
+                case 7:
+                    robot.s1.setPosition(.9);
+                    robot.s2.setPosition(.5);
+                    targetdirection = -90;
+                    inputdirection = 0;
+                    inputspeed = 0;
+                case 8:
+                    targetdirection = -90;
+                    inputdirection = 180;
+                    inputspeed = 0.5;
             }
             
             // inputdrift = -gamepad1.left_stick_x / 2;
@@ -138,7 +160,7 @@ public class Auto extends LinearOpMode {
             robot.lift.setPower(.45);
             
             telemetry.addData("TargetDir", targetdirection);
-            telemetry.addData("Direction: ", imudirection);
+            telemetry.addData("Direction: ", robot.formatAngle(robot.angles.angleUnit, robot.angles.secondAngle));
             telemetry.addData("Grabopen: ", grabopen);
             telemetry.update();
             idle();

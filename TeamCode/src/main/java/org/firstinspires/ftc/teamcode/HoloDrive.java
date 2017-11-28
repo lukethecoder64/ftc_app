@@ -58,12 +58,12 @@ public class HoloDrive extends LinearOpMode {
             
             gx = -gamepad1.right_stick_x;
             gy = gamepad1.right_stick_y;
+
+            imudirection = robot.update_imu();
             
             inputdrift = -gamepad1.left_stick_x / 2;
             inputdirection = Math.toDegrees(Math.atan2(gy, gx)) + 90;
             inputspeed = Math.sqrt(gx * gx + gy * gy);
-            
-            imudirection = robot.update_imu();
             
             if(targetdirection >= 180) {
                 targetdirection -= 360;
