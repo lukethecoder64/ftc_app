@@ -31,7 +31,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
+import org.firstinspires.ftc.teamcode.ClosableVuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -45,6 +45,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.ClosableVuforiaLocalizer;
 
 /**
  * This OpMode illustrates the basics of using the Vuforia engine to determine
@@ -77,19 +78,19 @@ public class VisionTest extends LinearOpMode {
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
-    VuforiaLocalizer vuforia;
+    ClosableVuforiaLocalizer vuforia;
 
     @Override public void runOpMode() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        ClosableVuforiaLocalizer.Parameters parameters = new ClosableVuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View, to save power
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = "AbcIKVj/////AAAAGYw/uMWceEEVrpzkW/beJ/UuODI5jYy4tvhvZXDQKMa+oFXbWzH7ca4hdBYnX1pImIlXRGYwH6QH45ZknzAQOnDuJ2LTGIjXgmyDDAWXeciL+9pRIo2Q5w/Eutg7Z7LfQs3wt8Mt0RNzHSev+P1tnmFMnGGowRFaQj6GJJOL64PxvP4x1W8DQk4pbjkCv5d7A6Kn5YwFM/KmC179VOJEZMBbupx2O9WMJ5Px+TO93gabXQH3NLhsPjjFr5bJjmFfNhLWLs/4NE6JARe0u/fu+NloB1SAp+w6AWHGR8k0pK9EnGyNf1SqbjrdPVTTPUZcfEaMUg8vXmHg56eIwat3uPXZGFcXXrloQlxO2PL+cgYU";
 
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        parameters.cameraDirection = ClosableVuforiaLocalizer.CameraDirection.FRONT;
+        this.vuforia = new ClosableVuforiaLocalizer(parameters);
 
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);

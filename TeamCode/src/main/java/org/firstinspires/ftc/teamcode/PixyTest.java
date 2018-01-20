@@ -41,7 +41,7 @@ final int RED_LED_CHANNEL = 1;
     
     Core robot = new Core();
     
-    robot.init(hardwareMap);
+    robot.init(hardwareMap, false);
     // robot.jewel.setPosition()
     
 

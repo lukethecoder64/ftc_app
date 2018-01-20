@@ -42,8 +42,11 @@ public class Core
     
     public Servo jewel;
     public Servo relicgrab;
+    public Servo relicarmholder;
     public Servo s1;
     public Servo s2;
+    public Servo s3;
+    public Servo s4;
     
     public AnalogInput pixya;
     public AnalogInput pixyb;
@@ -77,75 +80,65 @@ public class Core
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    public void init(HardwareMap ahwMap, boolean driveonly) {
         hwMap = ahwMap;
-        
+
         dtl = hwMap.get(DcMotor.class, "drive top left");
         dtr = hwMap.get(DcMotor.class, "drive top right");
         dbl = hwMap.get(DcMotor.class, "drive bottom left");
         dbr = hwMap.get(DcMotor.class, "drive bottom right");
-        
+
         dtl.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         dtr.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         dbl.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         dbr.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        
+
         dtl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         dtr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         dbl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         dbr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        
-        lift = hwMap.get(DcMotor.class, "lift");
-        lift.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        while (lift.getCurrentPosition() != 0) {}
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        
-        relicarm = hwMap.get(DcMotor.class, "relic");
-        relicarm.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        while (relicarm.getCurrentPosition() != 0) {}
-        relicarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        
-        pixya = hwMap.get(AnalogInput.class, "pixya");
-        pixyb = hwMap.get(AnalogInput.class, "pixyb");
-        
-        jewel = hwMap.get(Servo.class, "jewel");
-        jewel.setPosition(1);
-        
-        s1 = hwMap.get(Servo.class, "s1");
-        s2 = hwMap.get(Servo.class, "s2");
-        
-        relicgrab = hwMap.get(Servo.class, "relicgrab");
-        
-        BNO055IMU.Parameters parameters= new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu = hwMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-        
-        
-        
-        // dtl.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        // dtr.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        // dbr.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        // dbl.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-        // dtl.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        // dtr.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        // dbl.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        // dbr.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-    }
-    
-    public void drive(double inputdirection, double inputspeed) {
-        // dtr.setPower(Math.sin(Math.toRadians(inputdirection + 45)) * finalspeed + finaldrift);
-        // dbr.setPower(-Math.sin(Math.toRadians(inputdirection + 135)) * finalspeed - finaldrift);
-        // dbl.setPower(Math.sin(Math.toRadians(inputdirection + 225)) * finalspeed + finaldrift);
-        // dtl.setPower(Math.sin(Math.toRadians(inputdirection + 315)) * finalspeed + finaldrift);
-        
+        if (!driveonly) {
+            lift = hwMap.get(DcMotor.class, "lift");
+            lift.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            while (lift.getCurrentPosition() != 0) {
+            }
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            relicarm = hwMap.get(DcMotor.class, "relic");
+            relicarm.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            while (relicarm.getCurrentPosition() != 0) {
+            }
+            relicarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            pixya = hwMap.get(AnalogInput.class, "pixya");
+            pixyb = hwMap.get(AnalogInput.class, "pixyb");
+
+            jewel = hwMap.get(Servo.class, "jewel");
+            jewel.setPosition(.25);
+
+            s1 = hwMap.get(Servo.class, "s1");
+            s2 = hwMap.get(Servo.class, "s2");
+            s3 = hwMap.get(Servo.class, "s3");
+            s4 = hwMap.get(Servo.class, "s4");
+
+            relicgrab = hwMap.get(Servo.class, "relicgrab");
+            //relicarmholder = hwMap.get(Servo.class);
+
+
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+            parameters.loggingEnabled = true;
+            parameters.loggingTag = "IMU";
+            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+            imu = hwMap.get(BNO055IMU.class, "imu");
+            imu.initialize(parameters);
+            imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+
+        }
+
     }
     
     double update_imu() {
