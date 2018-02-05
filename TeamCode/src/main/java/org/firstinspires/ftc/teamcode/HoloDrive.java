@@ -44,7 +44,10 @@ public class HoloDrive extends LinearOpMode {
     public void runOpMode() {
         
         robot.init(hardwareMap, false);
-        
+
+        gamepad1.setJoystickDeadzone(.05f);
+
+
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );
         telemetry.update();
@@ -53,31 +56,41 @@ public class HoloDrive extends LinearOpMode {
         initRobot();
         //main loop
         while(opModeIsActive()){
+            gamepad1.right_stick_y = -gamepad1.right_stick_y;
+            if(Math.abs(gamepad1.right_stick_x) < 0.05) {
+                gamepad1.right_stick_x = 0;
+            }
+            if(Math.abs(gamepad1.right_stick_y) < 0.05) {
+                gamepad1.right_stick_y = 0;
+            }
+            if(Math.abs(gamepad1.left_stick_x) < 0.05) {
+                gamepad1.left_stick_x = 0;
+            }
             if(driveState == DriveState.CLIMB_RAMP_AUTO) {
                 climbRamp();
             }
             if(driveState == DriveState.NORMAL_DRIVE || driveState == DriveState.SLOW_DRIVE) {
-                if (gamepad1.y) { //climb ramp
-                    driveState = DriveState.CLIMB_RAMP_AUTO;
-                    robot.period = new ElapsedTime();
+//                if (gamepad1.y) { //climb ramp
+//                    driveState = DriveState.CLIMB_RAMP_AUTO;
+//                    robot.period = new ElapsedTime();
+//                }
+//                if (gamepad1.y) {
+//
+//                    switch(driveState){
+//                        case SLOW_DRIVE:
+//                            driveState = DriveState.NORMAL_DRIVE;
+//                            break;
+//                        case NORMAL_DRIVE:
+//                            driveState = DriveState.SLOW_DRIVE;
+//                            break;
+//                    }
+//                }
+
+                if(gamepad1.start) {
+                    driveState = DriveState.NORMAL_DRIVE;
                 }
-                if (gamepad1.x) {
-
-                    switch(driveState){
-                        case SLOW_DRIVE:
-                            driveState = DriveState.NORMAL_DRIVE;
-                            break;
-                        case NORMAL_DRIVE:
-                            driveState = DriveState.SLOW_DRIVE;
-                            break;
-                    }
-
-//                    if(driveState == DriveState.SLOW_DRIVE) {
-//                        driveState = DriveState.NORMAL_DRIVE;
-//                    }
-//                    if(driveState == DriveState.NORMAL_DRIVE) {
-//                        driveState = DriveState.SLOW_DRIVE;
-//                    }
+                if(gamepad1.y) {
+                    driveState = DriveState.SLOW_DRIVE;
                 }
 
                 gx = -gamepad1.right_stick_x;
@@ -89,7 +102,7 @@ public class HoloDrive extends LinearOpMode {
                 inputdirection = Math.toDegrees(Math.atan2(gy, gx)) + 90;
 
                 switch(driveState) {
-                    case SLOW_DRIVE:
+                     case SLOW_DRIVE:
                         inputspeed = (Math.sqrt(gx * gx + gy * gy)) * .30;
                         finaldrift = (-gamepad1.left_stick_x)       * .30;
                         break;
@@ -128,39 +141,44 @@ public class HoloDrive extends LinearOpMode {
                 robot.s4.setPosition(gamepad1.right_trigger / 2 + 0.3f);
 
                 //robot.jewel.setPosition(gamepad1.right_trigger / 2);
+                robot.relicgrab.setPosition(.6f - (gamepad2.left_trigger / 2.5f));
 
-                robot.relicgrab.setPosition(1f - gamepad1.left_trigger / 2);
-                if(gamepad1.a) {
-                    if (gamepad1.dpad_up) {
-                        robot.relicarm.setTargetPosition(robot.relicarm.getCurrentPosition() + 200);
-                    }
-                    if (gamepad1.dpad_down) {
-                        robot.relicarm.setTargetPosition(robot.relicarm.getCurrentPosition() - 200);
-                    }
-                    if(!gamepad1.dpad_up && !gamepad1.dpad_down) {
-                        robot.relicarm.setTargetPosition(robot.relicarm.getCurrentPosition());
-                    }
-                    robot.relicarm.setPower(.66);
+                if (gamepad2.y) {
+                    robot.relicarmholder.setPosition(0);
+                }
+                if (gamepad2.a) {
+                    robot.relicarmholder.setPosition(1);
+                }
+                if(!gamepad2.y && !gamepad2.a) {
+                    robot.relicarmholder.setPosition(.5);
+                }
+                robot.relicarm.setPower(.66);
+                robot.lift.setPower(1);
+                if (gamepad1.dpad_up && robot.lift.getTargetPosition() > -4200) {
+                    robot.lift.setTargetPosition(robot.lift.getTargetPosition() - 100);
+                }
+                if (gamepad1.dpad_down && robot.lift.getTargetPosition() < 0) {
+                    robot.lift.setTargetPosition(robot.lift.getTargetPosition() + 100);
+                }
+                if(!gamepad1.dpad_down && !gamepad1.dpad_up) {
+                    robot.lift.setTargetPosition(robot.lift.getCurrentPosition());
+                }
+                if (gamepad1.x) {
+                    robot.lift.setTargetPosition(0);
+                }
+                if(gamepad2.dpad_up) {
+                    robot.relicarm.setTargetPosition(robot.relicarm.getCurrentPosition() - 200);
+                }
+                else if(gamepad2.dpad_down) {
+                    robot.relicarm.setTargetPosition(robot.relicarm.getCurrentPosition() + 200);
                 }
                 else {
-                    robot.lift.setPower(1);
-                    if (gamepad1.dpad_up && robot.lift.getTargetPosition() > -4200) {
-                        robot.lift.setTargetPosition(robot.lift.getTargetPosition() - 100);
-                    }
-                    if (gamepad1.dpad_down && robot.lift.getTargetPosition() < 0) {
-                        robot.lift.setTargetPosition(robot.lift.getTargetPosition() + 100);
-                    }
-                    if(!gamepad1.dpad_down && !gamepad1.dpad_up) {
-                        robot.lift.setTargetPosition(robot.lift.getCurrentPosition());
-                    }
-                    if (gamepad1.x) {
-                        robot.lift.setTargetPosition(0);
-                    }
+                    robot.relicarm.setTargetPosition(robot.relicarm.getCurrentPosition());
                 }
                 telemetry.addData("Drive State: ", driveState);
                 telemetry.addData("TargetDir: ",     targetdirection);
                 telemetry.addData("Direction: ",   imudirection);
-                telemetry.addData("Speed2: ",      robot.lift.getCurrentPosition());
+                telemetry.addData("left stick x: ",      gamepad1.right_stick_x);
                 // telemetry.addData("IMU Dir", formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.update();
                 idle();
@@ -174,8 +192,6 @@ public class HoloDrive extends LinearOpMode {
     public void initRobot() {
         robot.lift.setTargetPosition(0);
         startpos = robot.lift.getCurrentPosition();
-
-        gamepad1.setJoystickDeadzone(1);
 
         driveState = DriveState.NORMAL_DRIVE;
     }
@@ -207,5 +223,9 @@ public class HoloDrive extends LinearOpMode {
             robot.dtl.setPower(0);
             driveState = DriveState.NORMAL_DRIVE;
         }
+    }
+
+    public void releaseRelicArm() {
+//        robot.relicarmholder.setPosition();
     }
 }

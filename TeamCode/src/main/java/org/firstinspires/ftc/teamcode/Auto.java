@@ -71,7 +71,6 @@ public class Auto extends LinearOpMode {
             }
         }
         telemetry.update();
-        init_jewel();
         
         waitForStart();
         relicTrackables.activate();
@@ -86,13 +85,20 @@ public class Auto extends LinearOpMode {
         robot.lift.setTargetPosition(startpos - 2000);
         while (opModeIsActive() && robot.lift.isBusy()) {}
 
-        align(30, 3f);
+        align(30, 1f);
+        telemetry.addData("fooooo: ", vumark);
+        telemetry.update();
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        while (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+        robot.period = new ElapsedTime();
+        while (robot.period.seconds() < 2f && opModeIsActive()) {
             vumark = vuMark;
+            telemetry.addData("mark: ", vumark);
+            telemetry.update();
         }
-        align(-30, 3f);
+        align(-30, 1f);
+        this.vuforia.close();
 
+        init_jewel();
         hit_jewel();
         jewelDetector.disable();
 
@@ -101,14 +107,17 @@ public class Auto extends LinearOpMode {
 
         wait_func(1);
         if(robot.red) {
-            drivedirection(2500, 180, .25f, 10);
-            align(90, 3f);
+            drivedirection(3500, 180, .25f, 6);
+            align(90, 1.5f);
         }
         if(robot.blue) {
-            drivedirection(2500, 0, .25f, 10);
-            align(90, 3f);
+            drivedirection(3500, 0, .25f, 6);
+            align(90, 1.5f);
         }
 
+        robot.lift.setTargetPosition(startpos);
+        while (opModeIsActive() && robot.lift.isBusy()) {}
+        place_vumark_glyph();
 
         while(opModeIsActive()) {}
 

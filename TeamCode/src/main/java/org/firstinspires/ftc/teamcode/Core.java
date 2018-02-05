@@ -122,11 +122,12 @@ public class Core
             s3 = hwMap.get(Servo.class, "s3");
             s4 = hwMap.get(Servo.class, "s4");
 
-            relicgrab = hwMap.get(Servo.class, "relicgrab");
-            //relicarmholder = hwMap.get(Servo.class);
+            relicgrab      = hwMap.get(Servo.class, "relicgrab");
+            relicarmholder = hwMap.get(Servo.class, "relicarmholder");
 
 
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            //relicarmholder = hwMap.get(Servo.class);
             parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
             parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
             parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
